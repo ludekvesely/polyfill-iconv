@@ -149,10 +149,13 @@ final class Iconv
             $ignore = '//IGNORE';
             $outCharset = substr($outCharset, 0, -8);
         }
-
         if ('//translit' === substr($outCharset, -10)) {
             $translit = '//TRANSLIT';
             $outCharset = substr($outCharset, 0, -10);
+        }
+        if ('//ignore' === substr($outCharset, -8)) {
+            $ignore = '//IGNORE';
+            $outCharset = substr($outCharset, 0, -8);
         }
 
         if ('//ignore' === substr($inCharset, -8)) {
@@ -160,6 +163,9 @@ final class Iconv
         }
         if ('//translit' === substr($inCharset, -10)) {
             $inCharset = substr($inCharset, 0, -10);
+        }
+        if ('//ignore' === substr($inCharset, -8)) {
+            $inCharset = substr($inCharset, 0, -8);
         }
 
         if (isset(self::$alias[ $inCharset])) {
@@ -673,10 +679,10 @@ final class Iconv
             } elseif ($translit) {
                 if (isset(self::$translitMap[$uchr])) {
                     $uchr = self::$translitMap[$uchr];
-                } elseif ($uchr >= "\xC3\x80") {
+                } elseif ($uchr >= "\xC2\xA1") {
                     $uchr = \Normalizer::normalize($uchr, \Normalizer::NFD);
 
-                    if ($uchr[0] < "\x80") {
+                    if ($uchr[0] < "\xA1") {
                         $uchr = $uchr[0];
                     } elseif ($ignore) {
                         continue;
